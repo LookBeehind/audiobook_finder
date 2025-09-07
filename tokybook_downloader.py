@@ -1,6 +1,9 @@
-import os
 import random
 import subprocess
+import atexit
+import os
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 import requests
@@ -141,6 +144,7 @@ class TokyBookScraper:
                     print(f"Warning: {ts} downloaded but is empty!")
             else:
                 print(f"Failed to download {url}: {r.status_code}")
+            time.sleep(4)  # Be polite to the server
 
         # Merge into a single .ts file
         merged_ts_path = Path(f"all_{chapter_name}.ts")
@@ -161,14 +165,22 @@ class TokyBookScraper:
             stdout=subprocess.DEVNULL,
         )
 
-        os.remove(merged_ts_path)
-        for ts in ts_files:
-            os.remove(chunks_dir / ts)
-        os.rmdir(chunks_dir)
+        def cleanup():
+            try:
+                os.remove(merged_ts_path)
+                for ts in ts_files:
+                    os.remove(chunks_dir / ts)
+                os.rmdir(chunks_dir)
+            except Exception as e:
+                print(f"Cleanup failed: {e}")
+
+        atexit.register(cleanup)
+
+        time.sleep(10)
         return str(DOWNLOAD_DIR / chapter_name)
 
     def download_all_chapters(self, chapters: list[str]):
-        with ThreadPoolExecutor(max_workers=100) as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             tasks = [
                 executor.submit(self.download_chapter, chapter_url)
                 for chapter_url in chapters
