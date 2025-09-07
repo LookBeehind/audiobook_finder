@@ -88,7 +88,11 @@ class BookScraper:
 
         books = []  # Initialize books list
         for website in WebsitesEnum.list():
-            url = f"{website}/?s={request_input}"
+            if website == WebsitesEnum.TOKYBOOK:
+                url = f"{website}/search?q={request_input}"
+            else:
+                url = f"{website}/?s={request_input}"
+
             try:
                 response = requests.get(url, verify=False, timeout=10)
             except (requests.exceptions.TooManyRedirects, requests.exceptions.RequestException) as e:
