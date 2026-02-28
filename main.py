@@ -3,6 +3,7 @@ import threading
 import warnings
 from urllib.parse import urlparse
 
+# Don't delete this import, it's used to dynamically create class instances based on the website name
 from parsers.tokybook import tokybook
 from parsers.naudios import naudios
 
