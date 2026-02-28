@@ -9,7 +9,6 @@ DEFAULT_CHROME_LOCATION = f'C:\\Users\\{USER}\\AppData\\Local\\Google\\Chrome\\U
 USER_DATA_DIR = Path(os.path.join(os.getcwd(), 'usr_data'))
 DOWNLOAD_DIR = Path(os.path.join(os.getcwd(), 'downloads'))
 DOWNLOAD_DIR.mkdir(exist_ok=True)
-
 USER_AGENTS = [
     # Chrome (Windows)
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
